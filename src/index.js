@@ -1,4 +1,5 @@
 import { mergeSort, merge } from "./merge-sort";
+import { prettyPrint } from "./pretty-print";
 
 class Node {
     constructor(data) {
@@ -28,18 +29,21 @@ function buildTree(arr, start, end) {
     return root;
 }
 
-const prettyPrint = (node, prefix = "", isLeft = true) => {
-    if (node === null) {
-      return;
+function insert(root, value) {
+    if (root == null) {
+        return new Node(value);
     }
-    if (node.right !== null) {
-      prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+
+    if (value < root.data) {
+        root.left = insertRec(root.left, value);
     }
-    console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
-    if (node.left !== null) {
-      prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+
+    if (value > root.data) {
+        root.right = insertRec(root.right, value);
     }
-};
+
+    return root;
+}
 
 const odinArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const myArray = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -47,7 +51,5 @@ const sortedArray = mergeSort(myArray);
 console.log(sortedArray);
 const myTree = buildTree(sortedArray, 0, sortedArray.length-1);
 console.log(myTree);
-
-
-
+console.log(insert(myTree, 9))
 prettyPrint(myTree);
