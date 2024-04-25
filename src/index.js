@@ -1,6 +1,7 @@
 import { mergeSort, merge } from "./merge-sort";
 import { prettyPrint } from "./pretty-print";
 
+// 1
 class Node {
     constructor(data) {
         this.data = data;
@@ -9,47 +10,99 @@ class Node {
     }
 }
 
+// 2
 class Tree {
-    constructor(array) {
-        this.root = buildTree(array, 0, array.length - 1); // ?
+    constructor(array, start, end) {
+        this.root = this.buildTree(array, start, end); // ?
+    }
+
+    // 3
+    buildTree(array, start, end) {
+        if (start > end) {
+            return null;
+        }
+
+        const midpoint = Math.floor((start + end) / 2);
+        const root = new Node(array[midpoint]);
+
+        root.left = this.buildTree(array, start, midpoint - 1);
+        root.right = this.buildTree(array, midpoint + 1, end);
+
+        return root;
     }
 }
 
-function buildTree(arr, start, end) {
-    if (start > end) {
-        return null;
-    }
-
-    const midpoint = Math.floor((start + end) / 2);
-    const root = new Node(arr[midpoint]);
-
-    root.left = buildTree(arr, start, midpoint - 1);
-    root.right = buildTree(arr, midpoint + 1, end);
-
-    return root;
-}
-
+// 4
 function insert(root, value) {
     if (root == null) {
         return new Node(value);
     }
 
     if (value < root.data) {
-        root.left = insertRec(root.left, value);
+        root.left = insert(root.left, value);
     }
 
     if (value > root.data) {
-        root.right = insertRec(root.right, value);
+        root.right = insert(root.right, value);
     }
 
     return root;
 }
 
+function deleteItem(root, value) {
+    let nodeToDelete = find(root, value);
+
+    if (!nodeToDelete) {return null;}
+
+    if (!nodeToDelete.left && !nodeToDelete.right) {
+        nodeToDelete.data = null;
+    }
+
+    if (nodeToDelete.left && !nodeToDelete.right) {
+        nodeToDelete.data = nodeToDelete.left.data;
+        nodeToDelete.left = null;
+    }
+
+    if (!nodeToDelete.left && nodeToDelete.right) {
+        nodeToDelete.data = nodeToDelete.right.data;
+        nodeToDelete.right = null;
+    }
+
+    if (nodeToDelete.left && nodeToDelete.right) {
+        let currentNode = nodeToDelete.right;
+        while (currentNode.left) {
+            currentNode = currentNode.left;
+        } // current node will be leftmost node on right tree
+        nodeToDelete.data = currentNode.data;
+        nodeToDelete.right = currentNode.right;
+        currentNode.data = null;
+    }
+}
+
+// 5
+function find(root, value) {
+    let currentNode = root;
+    while (currentNode) {
+        if (value == currentNode.data) {
+            return currentNode;
+        }
+        if (!value == currentNode.data && !currentNode.left && !currentNode.right) {
+            return null;
+        }
+        if (value < currentNode.data) {
+            currentNode = currentNode.left;
+        } else if (value > currentNode.data) {
+            currentNode = currentNode.right;
+        }
+    }
+}
+
 const odinArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
-const myArray = [1, 2, 3, 4, 5, 6, 7, 8];
-const sortedArray = mergeSort(myArray);
-console.log(sortedArray);
-const myTree = buildTree(sortedArray, 0, sortedArray.length-1);
-console.log(myTree);
-console.log(insert(myTree, 9))
-prettyPrint(myTree);
+const sortedArray = mergeSort(odinArray);
+
+const odinTree = new Tree(sortedArray, 0, sortedArray.length-1);
+console.log(odinTree);
+prettyPrint(odinTree.root);
+
+deleteItem(odinTree.root, 4)
+prettyPrint(odinTree.root);
