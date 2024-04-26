@@ -129,6 +129,34 @@ function inOrder(node, callback) {
     return traversed;
 }
 
+function preOrder(node, callback) {
+    const traversed = [];
+    function preOrderRec(node) {
+        if (node == null) {
+            return;
+        }
+        traversed.push(node.data);
+        preOrderRec(node.left);
+        preOrderRec(node.right);
+    }
+    preOrderRec(node);
+    return traversed;
+}
+
+function postOrder(node, callback) {
+    const traversed = [];
+    function postOrderRec(node) {
+        if (node == null) {
+            return;
+        }
+        postOrderRec(node.left);
+        postOrderRec(node.right);
+        traversed.push(node.data);
+    }
+    postOrderRec(node);
+    return traversed;
+}
+
 const odinArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const sortedArray = mergeSort(odinArray);
 
