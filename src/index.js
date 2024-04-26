@@ -97,12 +97,47 @@ function find(root, value) {
     }
 }
 
+// 6
+function levelOrder(root, callback) {
+    const queue = [];
+    const traversed = [];
+    queue.push(root);
+    while (queue.length > 0) {
+        const currentNode = queue.shift();
+        traversed.push(currentNode.data);
+        if (currentNode.left) {
+            queue.push(currentNode.left);
+        } if (currentNode.right) {
+            queue.push(currentNode.right);
+        }
+    }
+    return traversed;
+}
+
+// 7
+function inOrder(node, callback) {
+    const traversed = [];
+    function inOrderRec(node) {
+        if (node == null) {
+            return;
+        }
+        inOrderRec(node.left);
+        traversed.push(node.data);
+        inOrderRec(node.right);
+    }
+    inOrderRec(node);
+    return traversed;
+}
+
 const odinArray = [1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324];
 const sortedArray = mergeSort(odinArray);
 
 const odinTree = new Tree(sortedArray, 0, sortedArray.length-1);
 console.log(odinTree);
 prettyPrint(odinTree.root);
+
+console.log(levelOrder(odinTree.root));
+console.log(inOrder(odinTree.root));
 
 deleteItem(odinTree.root, 4)
 prettyPrint(odinTree.root);
